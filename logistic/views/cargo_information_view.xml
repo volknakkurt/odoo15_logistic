@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cargo_information_tree" model="ir.ui.view">
+        <field name="name">cargo.information.tree</field>
+        <field name="model">cargo.information</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <header>
+                    <button name="action_cargo_archive" string="Archive"
+                            help="On clicking this you will be archive what you selections"
+                            confirm="Are you sure you want to archive? ?"
+                            type="object"/>
+                </header>
+                <field name="sender_name"/>
+                <field name="recipient_name"/>
+                <field name="date_of_sending"/>
+                <field name="datetime_of_sending" optional="hide"/>
+                <field name="payment_type"/>
+                <field name="third_party" optional="hide" string="Paying"/>
+                <field name="tracking_number"/>
+                <field name="cargo_waybill_number" optional="hide"/>
+                <field name="state" decoration-muted="state == 'draft'"
+                       decoration-success="state == 'invoiced'"
+                       decoration-primary="state == 'to_approve'"
+                       decoration-bf="state == 'approved'"
+                       decoration-warning="state == 'on_the_way'"
+                       decoration-info="state == 'delivered'"
+                       decoration-danger="state == 'cancel'"
+                       widget="badge" string="Status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cargo_information_search" model="ir.ui.view">
+        <field name="name">cargo.information.search</field>
+        <field name="model">cargo.information</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sender_name" string="Sender Name"/>
+                <field name="recipient_name"/>
+                <field name="payment_type"/>
+                <field name="state"/>
+                <filter name="filter_sender_pay" string="Sender Pay" domain="[('payment_type','=','sender_pay')]"/>
+                <filter name="filter_recipient_pay" string="Recipient Pay"
+                        domain="[('payment_type','=','recipient_pay')]"/>
+                <filter name="filter_third_party_pay" string="Third Party Pay"
+                        domain="[('payment_type','=','third_party_pay')]"/>
+                <separator/>
+                <filter name="filter_archive" string="Archive" domain="[('active','=',False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Archive" name="group_by_archive" context="{'group_by':'active'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cargo_information_form" model="ir.ui.view">
+        <field name="name">cargo.information.form</field>
+        <field name="model">cargo.information</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_draft" string="Reset to Draft" type="object" class="oe_highlight"
+                            states="invoiced, to_approve, approved"/>
+                    <button name="%(logistic.action_to_approve)d" string="Send For Approval"
+                            help="*******************************" confirm="Are you sure to send for approval action ?"
+                            type="action" class="oe_highlight" states="draft,approved,to_approve"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight"
+                            states="to_approve"/>
+                    <button name="action_on_the_way" string="On The Way" type="object" class="oe_highlight"
+                            states="approved"/>
+                    <button name="action_delivered" string="Delivered" type="object" class="oe_highlight"
+                            states="on_the_way"/>
+                    <button name="action_invoiced" string="Create Invoice" type="object" class="oe_highlight"
+                            states="delivered"/>
+                    <button name="action_cancel" string="Cancelled" type="object" class="oe_highlight"
+                            states="delivered, draft"/>
+                    <button name="action_cargo_archive" string="Archive" type="object" class="oe_highlight"
+                            states="delivered, cancel"/>
+                    <field name="state" widget="statusbar" nolabel="1"
+                           statusbar_visible="draft, invoiced, to_approve, approved, on_the_way, delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sender_name"/>
+                            <field name="recipient_name"/>
+                            <field name="payment_type"/>
+                            <field name="third_party"
+                                   attrs="{'invisible': [('payment_type', '!=', 'third_party_pay')]}"/>
+                        </group>
+                        <group>
+                            <field name="date_of_sending"/>
+                            <field name="datetime_of_sending"/>
+                            <field name="tracking_number"/>
+                            <field name="cargo_waybill_number"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Product" name="product">
+                            <field name="product_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="price_unit"/>
+                                    <field name="qty"/>
+                                    <field name="untaxed_price"/>
+                                    <field name="tax"/>
+                                    <field name="total_price"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="product_id"/>
+                                        <field name="price_unit"/>
+                                        <field name="qty"/>
+                                        <field name="tax"/>
+                                    </group>
+                                </form>
+                            </field>
+                            <group>
+                                <group>
+                                    <field name="explanation" nolabel="1"
+                                           placeholder="Define your terms and conditions ..."/>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right">
+
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cargo_information" model="ir.actions.act_window">
+        <field name="name">Cargo Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cargo.information</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first cargo!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_cargo_information"
+              name="Create Cargo"
+              action="action_cargo_information"
+              parent="menu_cargo_information_master"
+              sequence="0"/>
+</odoo>

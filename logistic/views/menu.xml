@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_logistic_root"
+              name="Logistic"
+              web_icon="logistic,static/description/icon.png"
+              sequence="0"/>
+
+    <menuitem id="menu_cargo_information_master"
+              name="Cargo"
+              parent="menu_logistic_root"
+              sequence="10"/>
+    <menuitem id="menu_customer_management_master"
+              name="Customer Management"
+              parent="menu_logistic_root"
+              sequence="30"/>
+</odoo>

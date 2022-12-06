@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access.cargo.information,access_cargo_information,logistic.model_cargo_information,base.group_user,1,1,1,1
+access.customer,access_customer,logistic.model_customer,base.group_user,1,1,1,1
+access.cargo.product.lines,access_cargo_product_lines,logistic.model_cargo_product_lines,base.group_user,1,1,1,1
+access.cargo.management.wizard,access_cargo_management_wizard,logistic.model_cargo_management_wizard,base.group_user,1,1,1,1

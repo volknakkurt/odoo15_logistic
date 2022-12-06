@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cargo_management_form" model="ir.ui.view">
+        <field name="name">cargo.management.wizard.form</field>
+        <field name="model">cargo.management.wizard</field>
+        <field name="arch" type="xml">
+            <form duplicate="0" create="0">
+                <group>
+                    <group>
+                        <field name="cargo_id"/>
+                        <field name="cargo_waybill_number"/>
+                    </group>
+                    <group>
+                        <field name="vehicle_id"/>
+                        <field name="tracking_number"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_to_approve" model="ir.actions.act_window">
+        <field name="name">Cargo Management</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cargo.management.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_cargo_id' : cargo.information.id}</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
